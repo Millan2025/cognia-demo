@@ -15,7 +15,7 @@ tailwind.config = {
 }
 </script>
 <style>
-  /* ===== Suavizado de texto (fix pixelado) ===== */
+  /* ===== Suavizado de texto ===== */
   html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
   body { font-family:'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif; background:#FAF3E7; }
 
@@ -35,7 +35,7 @@ tailwind.config = {
 
   .badge-alto{background:#E76F51;color:#fff}.badge-medio{background:#F4A261;color:#fff}.badge-bajo{background:#2A9D8F;color:#fff}
 
-  /* ===== Gráfico de barras CSS (sin Chart.js) ===== */
+  /* ===== Gráfico de barras CSS ===== */
   .bar-group { display:flex; align-items:flex-end; gap:6px; height:220px; }
   .bar { width:34px; border-radius:8px 8px 0 0; transition:height .6s ease; }
 
@@ -51,6 +51,20 @@ tailwind.config = {
 
   ::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-track{background:#F4E3C1}::-webkit-scrollbar-thumb{background:#17A2B8;border-radius:4px}
   .card-hover{transition:all .3s ease}.card-hover:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(11,37,69,.15)}
+
+  /* ===== RESPONSIVE MÓVIL v3 ===== */
+  html, body { overflow-x: hidden; max-width: 100vw; }
+  @media (max-width: 767px) {
+    #mainApp { flex-direction: column !important; }
+    aside { position: relative !important; width: 100% !important; height: auto !important; }
+    aside nav { display: flex !important; flex-direction: row !important; overflow-x: auto; padding: 10px !important; gap: 6px; }
+    aside nav button { white-space: nowrap; flex: 0 0 auto; width: auto !important; padding: 10px 14px !important; }
+    aside nav button + button { margin-top: 0 !important; }
+    main { margin-left: 0 !important; padding: 16px !important; }
+    .bar { width: 18px !important; }
+    .phone-frame { width: min(300px, calc(100vw - 48px)); }
+    table { font-size: 12px; }
+  }
 </style>
 </head>
 <body class="antialiased">
@@ -63,8 +77,8 @@ tailwind.config = {
     <div class="text-center mb-8">
       <div class="inline-flex items-center justify-center w-20 h-20 bg-azul rounded-2xl mb-4"><span class="text-4xl">🧠</span></div>
       <h1 class="text-3xl font-extrabold text-azul">MIEVOMENTE</h1>
-      <p class="text-sm text-gray-500 mt-2">App de <br>Entrenamiento Cognitivo</p>
-      <h1 class="text-2xl font-extrabold">🧠 MIEVOMENTE</h1><p class="text-xs text-arena mt-1">CDC COGNIA · Riohacha, La Guajira</p>
+      <p class="text-sm text-gray-500 mt-2">App de Diagnóstico y<br>Entrenamiento Cognitivo</p>
+      <p class="text-xs text-turquesa font-semibold mt-1">Un producto del Centro de Desarrollo Cognitivo · CDC COGNIA</p>
     </div>
     <div class="space-y-3">
       <button onclick="enterApp()" class="w-full bg-azul hover:bg-azul2 text-white font-bold py-4 rounded-xl shadow-lg">👤 Entrar como Rector — Demo</button>
@@ -113,7 +127,6 @@ tailwind.config = {
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-        <!-- BARRAS CSS -->
         <div class="lg:col-span-2 bg-white rounded-2xl p-6 shadow-sm">
           <h3 class="font-bold text-azul mb-6">Pretest vs Postest por Área</h3>
           <div class="flex justify-around items-end bar-group">
@@ -135,7 +148,6 @@ tailwind.config = {
             <span class="flex items-center gap-2"><span class="w-3 h-3 rounded bg-turquesa inline-block"></span> Postest</span>
           </div>
         </div>
-        <!-- DONA CSS -->
         <div class="bg-white rounded-2xl p-6 shadow-sm">
           <h3 class="font-bold text-azul mb-6 text-center">Distribución de Riesgo</h3>
           <div class="donut"><div class="donut-hole"><p class="text-2xl font-extrabold text-azul">32</p><p class="text-[10px] text-gray-400">estudiantes</p></div></div>
@@ -147,7 +159,6 @@ tailwind.config = {
         </div>
       </div>
 
-      <!-- RADAR GRUPO (SVG) -->
       <div class="bg-white rounded-2xl p-6 shadow-sm">
         <h3 class="font-bold text-azul mb-2">Perfil Cognitivo Promedio del Grupo</h3>
         <div id="radarGrupo" class="max-w-md mx-auto"></div>
@@ -163,7 +174,7 @@ tailwind.config = {
           <select class="bg-white border border-gray-200 rounded-xl px-4 py-2 text-sm"><option>Todos los riesgos</option><option>🔴 Alto</option><option>🟡 Medio</option><option>🟢 Bajo</option></select>
         </div>
       </div>
-      <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+      <div class="bg-white rounded-2xl shadow-sm overflow-x-auto">
         <table class="w-full">
           <thead class="bg-azul text-white"><tr>
             <th class="text-left px-6 py-4 text-xs font-semibold uppercase">Estudiante</th><th class="text-left px-6 py-4 text-xs font-semibold uppercase">Grado</th>
@@ -180,7 +191,7 @@ tailwind.config = {
       <div class="mb-6"><h2 class="text-3xl font-extrabold text-azul">Estudiante 360°</h2><p class="text-gray-500 text-sm mt-1">Perfil cognitivo · Caracterización · Plan de entrenamiento</p></div>
       <div class="bg-azul rounded-2xl p-6 text-white mb-6 relative overflow-hidden">
         <div class="kanas-strip absolute top-0 left-0 right-0"></div>
-        <div class="flex items-center gap-5 mt-3">
+        <div class="flex flex-wrap items-center gap-5 mt-3">
           <div class="w-20 h-20 bg-coral rounded-2xl flex items-center justify-center text-3xl font-extrabold">JE</div>
           <div class="flex-1"><h3 class="text-2xl font-extrabold">J. Epieyú</h3><p class="text-arena text-sm">EST-012 · 9° · I.E. Rural Riohacha</p>
             <div class="flex gap-2 mt-2"><span class="badge-alto text-xs px-3 py-1 rounded-full font-semibold">🔴 Riesgo Alto</span><span class="bg-white/10 text-xs px-3 py-1 rounded-full">Perfil: Visoespacial</span></div></div>
@@ -226,7 +237,7 @@ tailwind.config = {
       <div class="mb-6"><h2 class="text-3xl font-extrabold text-azul">Bitácora de Sesión</h2><p class="text-gray-500 text-sm mt-1">Registro diario del facilitador · Trazabilidad por estudiante</p></div>
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="lg:col-span-2 bg-white rounded-2xl p-6 shadow-sm">
-          <div class="grid grid-cols-2 gap-4 mb-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
             <div><label class="text-xs font-semibold text-gray-500 uppercase">Fecha</label><input type="date" value="2026-12-18" class="w-full border border-gray-200 rounded-xl px-4 py-2 mt-1 text-sm"></div>
             <div><label class="text-xs font-semibold text-gray-500 uppercase">Sesión</label><select class="w-full border border-gray-200 rounded-xl px-4 py-2 mt-1 text-sm"><option>Sesión 4 — Tejiendo la Kana (Álgebra)</option></select></div>
           </div>
@@ -289,13 +300,13 @@ tailwind.config = {
     <section id="view-ruta" class="view">
       <div class="mb-8"><h2 class="text-3xl font-extrabold text-azul">Ruta del Proyecto</h2><p class="text-gray-500 text-sm mt-1">Del refuerzo intensivo a la Realidad Virtual</p></div>
       <div class="relative max-w-4xl mx-auto mt-12">
-        <div class="timeline-line"></div>
-        <div class="flex justify-between relative">
-          <div class="flex flex-col items-center w-1/3 px-4"><div class="timeline-dot" style="background:linear-gradient(135deg,#17A2B8,#13315C)">🎯</div>
+        <div class="timeline-line hidden md:block"></div>
+        <div class="flex flex-col md:flex-row justify-between relative gap-6 md:gap-0">
+          <div class="flex flex-col items-center w-full md:w-1/3 px-4"><div class="timeline-dot" style="background:linear-gradient(135deg,#17A2B8,#13315C)">🎯</div>
             <div class="bg-white rounded-2xl p-5 shadow-md mt-6 text-center card-hover w-full"><p class="text-xs font-bold text-turquesa uppercase">2026–2027 · Fase 1</p><h3 class="font-extrabold text-azul mt-1">Refuerzo Intensivo</h3><p class="text-xs text-gray-500 mt-2">Pretest → Perfil → Entrenamiento vivencial → Postest y trazabilidad</p><span class="inline-block mt-3 bg-green-100 text-green-700 text-xs font-bold px-3 py-1 rounded-full">● En ejecución</span></div></div>
-          <div class="flex flex-col items-center w-1/3 px-4"><div class="timeline-dot" style="background:linear-gradient(135deg,#F4A261,#E76F51)">🧠</div>
+          <div class="flex flex-col items-center w-full md:w-1/3 px-4"><div class="timeline-dot" style="background:linear-gradient(135deg,#F4A261,#E76F51)">🧠</div>
             <div class="bg-white rounded-2xl p-5 shadow-md mt-6 text-center card-hover w-full"><p class="text-xs font-bold text-coral uppercase">2027 · Fase 2</p><h3 class="font-extrabold text-azul mt-1">MIEVOMENTE · Perfil Cognitivo Digital</h3><p class="text-xs text-gray-500 mt-2">Test cognitivo digital que identifica el perfil y potencial de cada estudiante</p><span class="inline-block mt-3 bg-gray-100 text-gray-500 text-xs font-bold px-3 py-1 rounded-full">○ Planificado</span></div></div>
-          <div class="flex flex-col items-center w-1/3 px-4"><div class="timeline-dot" style="background:linear-gradient(135deg,#0B2545,#17A2B8)">🥽</div>
+          <div class="flex flex-col items-center w-full md:w-1/3 px-4"><div class="timeline-dot" style="background:linear-gradient(135deg,#0B2545,#17A2B8)">🥽</div>
             <div class="bg-white rounded-2xl p-5 shadow-md mt-6 text-center card-hover w-full"><p class="text-xs font-bold text-azul uppercase">2028 · Fase 3</p><h3 class="font-extrabold text-azul mt-1">Realidad Virtual + Sensorial</h3><p class="text-xs text-gray-500 mt-2">Entrenamiento inmersivo del potencial identificado con gafas RV y estimuladores</p><span class="inline-block mt-3 bg-gray-100 text-gray-500 text-xs font-bold px-3 py-1 rounded-full">○ Visión</span></div></div>
         </div>
       </div>
@@ -331,32 +342,28 @@ function showView(id, btn){
   if(id==='bitacora') renderAsistencia();
 }
 
-// ================= RADAR SVG (sin Chart.js, vectorial y nítido) =================
+// ================= RADAR SVG (vectorial, sin Chart.js) =================
 function drawRadar(containerId, labels, datasets){
   const n = labels.length, cx=170, cy=150, R=105;
   const pt = (val,i)=>{ const a=(Math.PI*2*i/n)-Math.PI/2; const r=R*val/4; return [cx+r*Math.cos(a), cy+r*Math.sin(a)]; };
   let svg = `<svg viewBox="0 0 340 300" width="100%" xmlns="http://www.w3.org/2000/svg">`;
-  // anillos
   for(let lvl=1; lvl<=4; lvl++){
     const pts = labels.map((_,i)=>pt(lvl,i).join(',')).join(' ');
     svg += `<polygon points="${pts}" fill="none" stroke="#E5E7EB" stroke-width="1"/>`;
   }
-  // ejes + etiquetas
   labels.forEach((lb,i)=>{
     const [x,y]=pt(4,i);
     svg += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#E5E7EB" stroke-width="1"/>`;
     const [lx,ly]=pt(4.75,i);
     svg += `<text x="${lx}" y="${ly}" font-size="9" fill="#6B7280" text-anchor="middle" dominant-baseline="middle">${lb}</text>`;
   });
-  // series
   datasets.forEach(ds=>{
     const pts = ds.data.map((v,i)=>pt(v,i).join(',')).join(' ');
     svg += `<polygon points="${pts}" fill="${ds.fill}" stroke="${ds.stroke}" stroke-width="2" ${ds.dash?`stroke-dasharray="5,4"`:''}/>`;
     ds.data.forEach((v,i)=>{ const [x,y]=pt(v,i); svg += `<circle cx="${x}" cy="${y}" r="3" fill="${ds.stroke}"/>`; });
   });
   svg += `</svg>`;
-  // leyenda
-  let leg = `<div class="flex gap-4 justify-center mt-2 text-[11px]">` + datasets.map(ds=>`<span class="flex items-center gap-1"><span class="w-3 h-3 rounded-sm inline-block" style="background:${ds.stroke}"></span>${ds.label}</span>`).join('') + `</div>`;
+  let leg = `<div class="flex gap-4 justify-center mt-2 text-[11px] flex-wrap">` + datasets.map(ds=>`<span class="flex items-center gap-1"><span class="w-3 h-3 rounded-sm inline-block" style="background:${ds.stroke}"></span>${ds.label}</span>`).join('') + `</div>`;
   document.getElementById(containerId).innerHTML = svg + leg;
 }
 
