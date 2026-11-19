@@ -15,37 +15,32 @@ tailwind.config = {
 }
 </script>
 <style>
-  /* ===== Suavizado de texto ===== */
-  html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
+  html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; scroll-behavior: smooth; }
   body { font-family:'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif; background:#FAF3E7; }
 
-  /* ===== Patrón Kanas Wayuu ===== */
   .kanas-strip { height:6px; background-image:repeating-linear-gradient(45deg,#E76F51 0 8px,#17A2B8 8px 16px,#F4E3C1 16px 24px,#0B2545 24px 32px); }
   .kanas-diamond { background-image:linear-gradient(135deg,rgba(231,111,81,.08) 25%,transparent 25%),linear-gradient(225deg,rgba(23,162,184,.08) 25%,transparent 25%); background-size:24px 24px; }
 
-  /* ===== Marco de teléfono ===== */
   .phone-frame { width:300px; height:600px; border-radius:38px; border:10px solid #0B2545; background:#fff; overflow:hidden; box-shadow:0 25px 60px rgba(11,37,69,.35); position:relative; }
   .phone-notch { position:absolute; top:0; left:50%; transform:translateX(-50%); width:110px; height:22px; background:#0B2545; border-radius:0 0 14px 14px; z-index:10; }
 
-  /* ===== Navegación ===== */
   .nav-item.active { background:linear-gradient(90deg,#17A2B8,#13315C); color:#fff; }
   .view { display:none; }
   .view.active { display:block; animation:fadeIn .4s ease; }
   @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes pulseSoft { 0%,100%{transform:scale(1)} 50%{transform:scale(1.04)} }
+  .pulse-soft { animation:pulseSoft 2.2s infinite; }
 
   .badge-alto{background:#E76F51;color:#fff}.badge-medio{background:#F4A261;color:#fff}.badge-bajo{background:#2A9D8F;color:#fff}
 
-  /* ===== Gráfico de barras CSS ===== */
   .bar-group { display:flex; align-items:flex-end; gap:6px; height:220px; }
   .bar { width:34px; border-radius:8px 8px 0 0; transition:height .6s ease; }
 
-  /* ===== Dona CSS ===== */
   .donut { width:180px; height:180px; border-radius:50%;
     background:conic-gradient(#2A9D8F 0 37.5%, #F4A261 37.5% 71.875%, #E76F51 71.875% 100%);
     display:flex; align-items:center; justify-content:center; margin:0 auto; }
   .donut-hole { width:110px; height:110px; border-radius:50%; background:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; }
 
-  /* ===== Timeline ===== */
   .timeline-dot { width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff;position:relative;z-index:2; }
   .timeline-line { position:absolute; top:26px; left:0; right:0; height:4px; background:linear-gradient(90deg,#17A2B8,#0B2545); z-index:1; }
 
@@ -69,11 +64,151 @@ tailwind.config = {
 </head>
 <body class="antialiased">
 
-<!-- ============ LOGIN ============ -->
-<div id="loginScreen" class="min-h-screen flex items-center justify-center bg-azul kanas-diamond relative overflow-hidden">
+<!-- ============================================================ -->
+<!-- LANDING PÚBLICA — GANCHO DE VENTA (AIDA)                     -->
+<!-- ============================================================ -->
+<div id="landingScreen">
+
+  <!-- Navbar -->
+  <div class="fixed top-0 left-0 right-0 z-50 bg-azul/95 backdrop-blur text-white">
+    <div class="kanas-strip"></div>
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+      <p class="font-extrabold text-lg">🧠 MIEVOMENTE <span class="text-arena text-xs font-semibold hidden sm:inline">· CDC COGNIA · Riohacha</span></p>
+      <div class="flex gap-2">
+        <button onclick="showLogin()" class="text-xs sm:text-sm font-bold border border-turquesa text-turquesa hover:bg-turquesa hover:text-white px-3 py-2 rounded-xl transition-all">Ver demo</button>
+        <button onclick="irACita()" class="text-xs sm:text-sm font-bold bg-coral hover:bg-coral/80 px-3 py-2 rounded-xl transition-all">Agendar presentación</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== AIDA: ATENCIÓN ===== -->
+  <section class="bg-azul kanas-diamond text-white pt-28 pb-16 px-4 relative">
+    <div class="max-w-4xl mx-auto text-center">
+      <span class="inline-block bg-turquesa/20 text-turquesa text-xs font-bold px-4 py-2 rounded-full mb-6">RIOHACHA · LA GUAJIRA · PILOTO DIC 2026 – ENE 2027</span>
+      <h1 class="text-3xl sm:text-5xl font-extrabold leading-tight">Sus repitentes tienen <span class="text-coral">UNA última oportunidad</span> en el primer periodo.</h1>
+      <p class="text-xl sm:text-2xl text-arena font-semibold mt-5">¿Con qué evidencia la va a defender ante Secretaría, padres y comisión de evaluación?</p>
+      <p class="text-sm sm:text-base text-gray-300 mt-6 max-w-2xl mx-auto leading-relaxed">El Centro de Desarrollo Cognitivo <strong class="text-white">CDC COGNIA</strong> convierte el refuerzo de vacaciones en un programa de <strong class="text-white">entrenamiento cognitivo</strong>: diagnóstico, plan personalizado y trazabilidad digital en nuestra app <strong class="text-turquesa">MIEVOMENTE</strong>.</p>
+      <div class="flex flex-col sm:flex-row gap-3 justify-center mt-8">
+        <button onclick="irACita()" class="pulse-soft bg-coral hover:bg-coral/80 font-extrabold px-8 py-4 rounded-2xl text-lg shadow-xl">📅 Agendar presentación privada — 15 min</button>
+        <button onclick="showLogin()" class="border-2 border-turquesa text-turquesa hover:bg-turquesa hover:text-white font-bold px-8 py-4 rounded-2xl text-lg transition-all">Explorar la demo interactiva →</button>
+      </div>
+      <p class="text-xs text-arena/80 mt-6">⏳ Cupos piloto: <strong>3 colegios anfitriones</strong> · La ventana cierra el 15 de diciembre de 2026</p>
+    </div>
+  </section>
+
+  <!-- ===== AIDA: INTERÉS (datos) ===== -->
+  <section class="bg-crema py-14 px-4">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="text-2xl sm:text-3xl font-extrabold text-azul text-center mb-10">El problema no es nuevo. Los datos lo confirman.</h2>
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white rounded-2xl p-5 text-center shadow-sm card-hover border-t-4 border-coral"><p class="text-3xl font-extrabold text-coral">383</p><p class="text-xs text-gray-500 mt-2">pts PISA 2022 en matemáticas: 89 puntos bajo el promedio OCDE</p></div>
+        <div class="bg-white rounded-2xl p-5 text-center shadow-sm card-hover border-t-4 border-coral"><p class="text-3xl font-extrabold text-coral">71%</p><p class="text-xs text-gray-500 mt-2">de estudiantes colombianos no alcanza el nivel básico (PISA 2022)</p></div>
+        <div class="bg-white rounded-2xl p-5 text-center shadow-sm card-hover border-t-4 border-coral"><p class="text-3xl font-extrabold text-coral">5.73%</p><p class="text-xs text-gray-500 mt-2">deserción escolar en La Guajira, superior al promedio nacional</p></div>
+        <div class="bg-white rounded-2xl p-5 text-center shadow-sm card-hover border-t-4 border-coral"><p class="text-3xl font-extrabold text-coral">×2</p><p class="text-xs text-gray-500 mt-2">ansiedad y depresión adolescente post-pandemia (estudios 2022)</p></div>
+      </div>
+
+      <div class="mt-12 bg-white rounded-3xl shadow-sm p-6 sm:p-10">
+        <h3 class="text-xl sm:text-2xl font-extrabold text-azul text-center mb-8">No es la nota. Es lo que hay detrás de la nota.</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <p class="text-xs font-bold text-gray-400 uppercase mb-3">Lo que ve el docente</p>
+            <ul class="space-y-2 text-sm text-gray-600">
+              <li class="bg-crema rounded-xl px-4 py-2">"No entiende álgebra"</li>
+              <li class="bg-crema rounded-xl px-4 py-2">"Se distrae mucho"</li>
+              <li class="bg-crema rounded-xl px-4 py-2">"Se bloquea al equivocarse"</li>
+              <li class="bg-crema rounded-xl px-4 py-2">"Es lento resolviendo"</li>
+            </ul>
+          </div>
+          <div>
+            <p class="text-xs font-bold text-turquesa uppercase mb-3">Lo que medimos nosotros</p>
+            <ul class="space-y-2 text-sm text-gray-600">
+              <li class="bg-turquesa/10 rounded-xl px-4 py-2">Memoria de trabajo descendida (1.8/4)</li>
+              <li class="bg-turquesa/10 rounded-xl px-4 py-2">Atención sostenida en zona de riesgo</li>
+              <li class="bg-turquesa/10 rounded-xl px-4 py-2">Tolerancia a la frustración baja</li>
+              <li class="bg-turquesa/10 rounded-xl px-4 py-2">Ansiedad matemática alta</li>
+            </ul>
+          </div>
+        </div>
+        <p class="text-center text-sm font-bold text-coral mt-8">Tratar solo el síntoma es garantizar que el próximo periodo repita el patrón.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== AIDA: DESEO (método + entregables) ===== -->
+  <section class="bg-white py-14 px-4">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="text-2xl sm:text-3xl font-extrabold text-azul text-center mb-3">Las matemáticas son el vehículo. El cerebro es el destino.</h2>
+      <p class="text-center text-gray-500 text-sm mb-10 max-w-2xl mx-auto">Cuatro pasos, cuatro semanas, y su colegio queda con evidencia presentable ante cualquier instancia.</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+        <div class="bg-crema rounded-2xl p-5 border-t-4 border-turquesa card-hover"><p class="text-2xl font-extrabold text-turquesa">1</p><p class="font-bold text-azul mt-1">Pretest · 20 min</p><p class="text-xs text-gray-500 mt-2">Académico + cognitivo + motivacional</p></div>
+        <div class="bg-crema rounded-2xl p-5 border-t-4 border-turquesa card-hover"><p class="text-2xl font-extrabold text-turquesa">2</p><p class="font-bold text-azul mt-1">Perfil cognitivo</p><p class="text-xs text-gray-500 mt-2">Caracterización observacional por 6 variables</p></div>
+        <div class="bg-crema rounded-2xl p-5 border-t-4 border-turquesa card-hover"><p class="text-2xl font-extrabold text-turquesa">3</p><p class="font-bold text-azul mt-1">12 sesiones vivenciales</p><p class="text-xs text-gray-500 mt-2">Roles: El Palabrero, El Tejedor, El Sol, El Auditor · etnoeducación Wayuu</p></div>
+        <div class="bg-crema rounded-2xl p-5 border-t-4 border-turquesa card-hover"><p class="text-2xl font-extrabold text-turquesa">4</p><p class="font-bold text-azul mt-1">Trazabilidad MIEVOMENTE</p><p class="text-xs text-gray-500 mt-2">Postest, dashboards e informes automáticos</p></div>
+      </div>
+
+      <h3 class="text-xl font-extrabold text-azul text-center mb-6">Lo que recibe su colegio al final del piloto</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="bg-crema rounded-2xl p-4 text-sm text-gray-600">📄 Informe individual por estudiante: perfil, avance y recomendaciones</div>
+        <div class="bg-crema rounded-2xl p-4 text-sm text-gray-600">📊 Informe institucional con semáforo por grado y área</div>
+        <div class="bg-crema rounded-2xl p-4 text-sm text-gray-600">🏛️ Insumo directo para el PEI</div>
+        <div class="bg-crema rounded-2xl p-4 text-sm text-gray-600">📈 Evidencia presentable ante Secretaría de Educación</div>
+        <div class="bg-crema rounded-2xl p-4 text-sm text-gray-600">👨‍🏫 Ficha por estudiante con ajustes curriculares para sus docentes</div>
+        <div class="bg-crema rounded-2xl p-4 text-sm text-gray-600">👨‍👩‍👧 Informe para padres con lenguaje claro y recomendaciones</div>
+      </div>
+      <p class="text-center text-sm font-bold text-azul mt-8">Usted no compra un curso. Compra evidencia de que intervino a tiempo, con método y con datos.</p>
+      <div class="text-center mt-6">
+        <button onclick="showLogin()" class="border-2 border-turquesa text-turquesa hover:bg-turquesa hover:text-white font-bold px-6 py-3 rounded-2xl transition-all">Ver la app por dentro (demo 2 min) →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== AIDA: ACCIÓN (cita) ===== -->
+  <section id="cita" class="bg-azul kanas-diamond text-white py-14 px-4 relative">
+    <div class="kanas-strip absolute top-0 left-0 right-0"></div>
+    <div class="max-w-3xl mx-auto">
+      <h2 class="text-2xl sm:text-3xl font-extrabold text-center mb-3">Agende su presentación privada</h2>
+      <p class="text-center text-arena text-sm mb-8">15 minutos, presencial en su colegio o por videollamada. Sin compromiso. Respondemos en menos de 24 horas hábiles.</p>
+      <div class="bg-white rounded-3xl p-6 sm:p-8 text-azul shadow-2xl">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div><label class="text-xs font-bold text-gray-500 uppercase">Nombre y apellido *</label><input id="citaNombre" type="text" placeholder="Ej: María Pushaina" class="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 text-sm"></div>
+          <div><label class="text-xs font-bold text-gray-500 uppercase">Cargo</label>
+            <select id="citaCargo" class="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 text-sm bg-white">
+              <option>Rector(a)</option><option>Coordinador(a) académico</option><option>Docente</option><option>Padre / Acudiente</option><option>Otro</option>
+            </select></div>
+          <div><label class="text-xs font-bold text-gray-500 uppercase">Institución educativa *</label><input id="citaColegio" type="text" placeholder="Ej: I.E. Técnica Riohacha" class="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 text-sm"></div>
+          <div><label class="text-xs font-bold text-gray-500 uppercase">Celular / WhatsApp</label><input id="citaTelefono" type="tel" placeholder="Ej: 300 000 0000" class="w-full border border-gray-200 rounded-xl px-4 py-3 mt-1 text-sm"></div>
+        </div>
+        <button onclick="sendCita()" class="w-full mt-5 bg-coral hover:bg-coral/80 text-white font-extrabold py-4 rounded-2xl text-lg shadow-lg transition-all">💬 Solicitar cita por WhatsApp</button>
+        <p class="text-[10px] text-gray-400 text-center mt-3">Al enviar se abrirá WhatsApp con su solicitud pre-redactada. Sus datos se usan solo para agendar la cita (Ley 1581 de 2012).</p>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8 text-center text-xs text-arena">
+        <div class="bg-white/5 rounded-2xl p-4">🎯 <strong class="text-white">Piloto:</strong> 20 estudiantes por colegio</div>
+        <div class="bg-white/5 rounded-2xl p-4">🏫 <strong class="text-white">Máximo:</strong> 3 colegios anfitriones</div>
+        <div class="bg-white/5 rounded-2xl p-4">📅 <strong class="text-white">Inicio:</strong> 15 de diciembre de 2026</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer landing -->
+  <footer class="bg-azul2 text-center py-8 px-4">
+    <div class="kanas-strip mb-6"></div>
+    <p class="text-white font-extrabold">🧠 MIEVOMENTE · Centro de Desarrollo Cognitivo CDC COGNIA</p>
+    <p class="text-arena text-xs mt-2">Riohacha, La Guajira, Colombia</p>
+    <p class="text-gray-400 text-[10px] mt-4 max-w-xl mx-auto">Demo institucional con datos simulados. El perfil cognitivo MIEVOMENTE es observacional y de carácter pedagógico; no constituye diagnóstico clínico. Si detectamos señal de alerta, remitimos a orientación escolar o EPS.</p>
+  </footer>
+
+  <!-- Botón flotante WhatsApp -->
+  <button onclick="waGenerico()" class="fixed bottom-5 right-5 z-50 bg-[#25D366] hover:bg-[#1ebe5b] text-white w-14 h-14 rounded-full shadow-2xl flex items-center justify-center text-2xl pulse-soft" title="Escríbanos por WhatsApp">💬</button>
+</div>
+
+<!-- ============================================================ -->
+<!-- LOGIN                                                        -->
+<!-- ============================================================ -->
+<div id="loginScreen" class="hidden min-h-screen flex items-center justify-center bg-azul kanas-diamond relative overflow-hidden">
   <div class="kanas-strip absolute top-0 left-0 right-0"></div>
   <div class="kanas-strip absolute bottom-0 left-0 right-0"></div>
   <div class="bg-white rounded-3xl shadow-2xl p-10 w-full max-w-md mx-4">
+    <button onclick="showLanding()" class="text-xs text-gray-400 hover:text-azul mb-4">← Volver al inicio</button>
     <div class="text-center mb-8">
       <div class="inline-flex items-center justify-center w-20 h-20 bg-azul rounded-2xl mb-4"><span class="text-4xl">🧠</span></div>
       <h1 class="text-3xl font-extrabold text-azul">MIEVOMENTE</h1>
@@ -89,7 +224,9 @@ tailwind.config = {
   </div>
 </div>
 
-<!-- ============ APP ============ -->
+<!-- ============================================================ -->
+<!-- APP PRINCIPAL                                                -->
+<!-- ============================================================ -->
 <div id="mainApp" class="hidden min-h-screen flex">
   <aside class="w-64 bg-azul text-white flex flex-col fixed h-full z-40">
     <div class="kanas-strip"></div>
@@ -117,7 +254,6 @@ tailwind.config = {
         <div><h2 class="text-3xl font-extrabold text-azul">Dashboard Rector</h2><p class="text-gray-500 text-sm mt-1">Programa Segunda Oportunidad · Dic 2026 – Ene 2027</p></div>
         <span class="bg-turquesa/10 text-turquesa px-4 py-2 rounded-full text-sm font-semibold">🟢 Programa Activo</span>
       </div>
-
       <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
         <div class="bg-white rounded-2xl p-5 shadow-sm card-hover border-t-4 border-azul"><p class="text-xs text-gray-500 font-semibold uppercase">Estudiantes</p><p class="text-3xl font-extrabold text-azul mt-1">32</p><p class="text-xs text-green-600 mt-1">Activos</p></div>
         <div class="bg-white rounded-2xl p-5 shadow-sm card-hover border-t-4 border-turquesa"><p class="text-xs text-gray-500 font-semibold uppercase">Asistencia</p><p class="text-3xl font-extrabold text-turquesa mt-1">89%</p><p class="text-xs text-gray-400 mt-1">Promedio</p></div>
@@ -125,7 +261,6 @@ tailwind.config = {
         <div class="bg-white rounded-2xl p-5 shadow-sm card-hover border-t-4 border-coral"><p class="text-xs text-gray-500 font-semibold uppercase">Riesgo Alto</p><p class="text-3xl font-extrabold text-coral mt-1">9</p><p class="text-xs text-gray-400 mt-1">Atención prioritaria</p></div>
         <div class="bg-white rounded-2xl p-5 shadow-sm card-hover border-t-4 border-arena"><p class="text-xs text-gray-500 font-semibold uppercase">Sesiones</p><p class="text-3xl font-extrabold text-azul mt-1">11/12</p><p class="text-xs text-gray-400 mt-1">Cumplidas</p></div>
       </div>
-
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         <div class="lg:col-span-2 bg-white rounded-2xl p-6 shadow-sm">
           <h3 class="font-bold text-azul mb-6">Pretest vs Postest por Área</h3>
@@ -158,7 +293,6 @@ tailwind.config = {
           </div>
         </div>
       </div>
-
       <div class="bg-white rounded-2xl p-6 shadow-sm">
         <h3 class="font-bold text-azul mb-2">Perfil Cognitivo Promedio del Grupo</h3>
         <div id="radarGrupo" class="max-w-md mx-auto"></div>
@@ -321,6 +455,10 @@ tailwind.config = {
 </div>
 
 <script>
+// ================= CONFIGURACIÓN =================
+// ⚠️ REEMPLAZA con tu número de WhatsApp (código país 57 + número, sin espacios):
+const WHATSAPP = "3136436488";
+
 // ================= DATOS =================
 const estudiantes = [
   { id:"EST-012", nombre:"J. Epieyú",  grado:"9°",  riesgo:"alto",  pretest:2.1, perfil:"Visoespacial",      avance:61 },
@@ -330,9 +468,13 @@ const estudiantes = [
   { id:"EST-052", nombre:"A. Vanegas", grado:"11°", riesgo:"medio", pretest:2.6, perfil:"Mixto",             avance:70 }
 ];
 
-// ================= NAVEGACIÓN =================
+// ================= NAVEGACIÓN DE PANTALLAS =================
+function showLanding(){ document.getElementById('landingScreen').classList.remove('hidden'); document.getElementById('loginScreen').classList.add('hidden'); document.getElementById('mainApp').classList.add('hidden'); window.scrollTo(0,0); }
+function showLogin(){ document.getElementById('landingScreen').classList.add('hidden'); document.getElementById('loginScreen').classList.remove('hidden'); document.getElementById('mainApp').classList.add('hidden'); }
 function enterApp(){ document.getElementById('loginScreen').classList.add('hidden'); document.getElementById('mainApp').classList.remove('hidden'); showView('dashboard', document.querySelector('.nav-item')); }
-function logout(){ document.getElementById('mainApp').classList.add('hidden'); document.getElementById('loginScreen').classList.remove('hidden'); }
+function logout(){ showLanding(); }
+function irACita(){ document.getElementById('cita').scrollIntoView({behavior:'smooth'}); }
+
 function showView(id, btn){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
@@ -342,7 +484,22 @@ function showView(id, btn){
   if(id==='bitacora') renderAsistencia();
 }
 
-// ================= RADAR SVG (vectorial, sin Chart.js) =================
+// ================= CAPTURA DE CITA (WhatsApp) =================
+function sendCita(){
+  const n = document.getElementById('citaNombre').value.trim();
+  const c = document.getElementById('citaColegio').value.trim();
+  const g = document.getElementById('citaCargo').value;
+  const t = document.getElementById('citaTelefono').value.trim();
+  if(!n || !c){ alert('Por favor indique su nombre y su institución educativa.'); return; }
+  const msg = `Hola, soy ${n}, ${g} de ${c}${t?` (cel: ${t})`:''}. Vi la demo de MIEVOMENTE / CDC COGNIA y quiero agendar la presentación privada (15 min) para nuestro colegio. Nos interesa el piloto Segunda Oportunidad Dic 2026 - Ene 2027.`;
+  window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`, '_blank');
+}
+function waGenerico(){
+  const msg = `Hola, vi la página de MIEVOMENTE / CDC COGNIA y quiero información sobre el piloto Segunda Oportunidad para colegios de Riohacha.`;
+  window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`, '_blank');
+}
+
+// ================= RADAR SVG =================
 function drawRadar(containerId, labels, datasets){
   const n = labels.length, cx=170, cy=150, R=105;
   const pt = (val,i)=>{ const a=(Math.PI*2*i/n)-Math.PI/2; const r=R*val/4; return [cx+r*Math.cos(a), cy+r*Math.sin(a)]; };
