@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>COGNIA — Plataforma Integral de Refuerzo y Entrenamiento Cognitivo</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script>
+tailwind.config = {
+  theme: { extend: {
+    colors: { azul:'#0B2545', azul2:'#13315C', turquesa:'#17A2B8', arena:'#F4E3C1', coral:'#E76F51', crema:'#FAF3E7' },
+    fontFamily: { sans: ['Plus Jakarta Sans','Segoe UI','system-ui','sans-serif'] }
+  }}
+}
+</script>
+<style>
+  /* ===== Suavizado de texto (fix pixelado) ===== */
+  html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
+  body { font-family:'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif; background:#FAF3E7; }
+
+  /* ===== Patrón Kanas Wayuu ===== */
+  .kanas-strip { height:6px; background-image:repeating-linear-gradient(45deg,#E76F51 0 8px,#17A2B8 8px 16px,#F4E3C1 16px 24px,#0B2545 24px 32px); }
+  .kanas-diamond { background-image:linear-gradient(135deg,rgba(231,111,81,.08) 25%,transparent 25%),linear-gradient(225deg,rgba(23,162,184,.08) 25%,transparent 25%); background-size:24px 24px; }
+
+  /* ===== Marco de teléfono ===== */
+  .phone-frame { width:300px; height:600px; border-radius:38px; border:10px solid #0B2545; background:#fff; overflow:hidden; box-shadow:0 25px 60px rgba(11,37,69,.35); position:relative; }
+  .phone-notch { position:absolute; top:0; left:50%; transform:translateX(-50%); width:110px; height:22px; background:#0B2545; border-radius:0 0 14px 14px; z-index:10; }
+
+  /* ===== Navegación ===== */
+  .nav-item.active { background:linear-gradient(90deg,#17A2B8,#13315C); color:#fff; }
+  .view { display:none; }
+  .view.active { display:block; animation:fadeIn .4s ease; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+  .badge-alto{background:#E76F51;color:#fff}.badge-medio{background:#F4A261;color:#fff}.badge-bajo{background:#2A9D8F;color:#fff}
+
+  /* ===== Gráfico de barras CSS (sin Chart.js) ===== */
+  .bar-group { display:flex; align-items:flex-end; gap:6px; height:220px; }
+  .bar { width:34px; border-radius:8px 8px 0 0; transition:height .6s ease; }
+
+  /* ===== Dona CSS ===== */
+  .donut { width:180px; height:180px; border-radius:50%;
+    background:conic-gradient(#2A9D8F 0 37.5%, #F4A261 37.5% 71.875%, #E76F51 71.875% 100%);
+    display:flex; align-items:center; justify-content:center; margin:0 auto; }
+  .donut-hole { width:110px; height:110px; border-radius:50%; background:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+
+  /* ===== Timeline ===== */
+  .timeline-dot { width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff;position:relative;z-index:2; }
+  .timeline-line { position:absolute; top:26px; left:0; right:0; height:4px; background:linear-gradient(90deg,#17A2B8,#0B2545); z-index:1; }
+
+  ::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-track{background:#F4E3C1}::-webkit-scrollbar-thumb{background:#17A2B8;border-radius:4px}
+  .card-hover{transition:all .3s ease}.card-hover:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(11,37,69,.15)}
+</style>
+</head>
+<body class="antialiased">
+
+<!-- ============ LOGIN ============ -->
+<div id="loginScreen" class="min-h-screen flex items-center justify-center bg-azul kanas-diamond relative overflow-hidden">
+  <div class="kanas-strip absolute top-0 left-0 right-0"></div>
+  <div class="kanas-strip absolute bottom-0 left-0 right-0"></div>
+  <div class="bg-white rounded-3xl shadow-2xl p-10 w-full max-w-md mx-4">
+    <div class="text-center mb-8">
+      <div class="inline-flex items-center justify-center w-20 h-20 bg-azul rounded-2xl mb-4"><span class="text-4xl">◈</span></div>
+      <h1 class="text-3xl font-extrabold text-azul">COGNIA</h1>
+      <p class="text-sm text-gray-500 mt-2">Plataforma Integral de Refuerzo<br>y Entrenamiento Cognitivo</p>
+      <p class="text-xs text-turquesa font-semibold mt-1">Riohacha · La Guajira</p>
+    </div>
+    <div class="space-y-3">
+      <button onclick="enterApp()" class="w-full bg-azul hover:bg-azul2 text-white font-bold py-4 rounded-xl shadow-lg">👤 Entrar como Rector — Demo</button>
+      <button onclick="enterApp()" class="w-full bg-white border-2 border-turquesa text-turquesa hover:bg-turquesa hover:text-white font-bold py-4 rounded-xl">📋 Facilitador</button>
+      <button onclick="enterApp()" class="w-full bg-white border-2 border-arena text-azul hover:bg-arena font-bold py-4 rounded-xl">📱 Estudiante / Padre</button>
+    </div>
+    <p class="text-[10px] text-gray-400 text-center mt-6">Demo institucional con datos simulados.<br>Perfil cognitivo observacional pedagógico, no constituye diagnóstico clínico.</p>
+  </div>
+</div>
+
+<!-- ============ APP ============ -->
+<div id="mainApp" class="hidden min-h-screen flex">
+  <aside class="w-64 bg-azul text-white flex flex-col fixed h-full z-40">
+    <div class="kanas-strip"></div>
+    <div class="p-6 border-b border-azul2"><h1 class="text-2xl font-extrabold">◈ COGNIA</h1><p class="text-xs text-arena mt-1">Centro de Desarrollo Cognitivo</p></div>
+    <nav class="flex-1 p-4 space-y-1">
+      <button onclick="showView('dashboard',this)" class="nav-item active w-full text-left px-4 py-3 rounded-xl flex items-center gap-3 hover:bg-azul2 text-sm font-medium">📊 Dashboard Rector</button>
+      <button onclick="showView('estudiantes',this)" class="nav-item w-full text-left px-4 py-3 rounded-xl flex items-center gap-3 hover:bg-azul2 text-sm font-medium">👥 Estudiantes</button>
+      <button onclick="showView('ficha360',this)" class="nav-item w-full text-left px-4 py-3 rounded-xl flex items-center gap-3 hover:bg-azul2 text-sm font-medium">🎯 Estudiante 360°</button>
+      <button onclick="showView('bitacora',this)" class="nav-item w-full text-left px-4 py-3 rounded-xl flex items-center gap-3 hover:bg-azul2 text-sm font-medium">📝 Bitácora Sesión</button>
+      <button onclick="showView('movilEstudiante',this)" class="nav-item w-full text-left px-4 py-3 rounded-xl flex items-center gap-3 hover:bg-azul2 text-sm font-medium">📱 Vista Estudiante</button>
+      <button onclick="showView('movilPadre',this)" class="nav-item w-full text-left px-4 py-3 rounded-xl flex items-center gap-3 hover:bg-azul2 text-sm font-medium">👨‍👩‍👧 Vista Padre</button>
+      <button onclick="showView('ruta',this)" class="nav-item w-full text-left px-4 py-3 rounded-xl flex items-center gap-3 hover:bg-azul2 text-sm font-medium">🗺️ Ruta del Proyecto</button>
+    </nav>
+    <div class="p-4 border-t border-azul2">
+      <div class="flex items-center gap-3"><div class="w-10 h-10 bg-turquesa rounded-full flex items-center justify-center font-bold">R</div><div><p class="text-sm font-semibold">Rector Demo</p><p class="text-xs text-arena">I.E. Riohacha</p></div></div>
+      <button onclick="logout()" class="mt-3 w-full text-xs text-arena hover:text-white py-2 rounded-lg hover:bg-azul2">Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <main class="flex-1 ml-64 p-8">
+
+    <!-- ===== DASHBOARD ===== -->
+    <section id="view-dashboard" class="view active">
+      <div class="flex justify-between items-center mb-6">
+        <div><h2 class="text-3xl font-extrabold text-azul">Dashboard Rector</h2><p class="text-gray-500 text-sm mt-1">Programa Segunda Oportunidad · Dic 2026 – Ene 2027</p></div>
+        <span class="bg-turquesa/10 text-turquesa px-4 py-2 rounded-full text-sm font-semibold">🟢 Programa Activo</span>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+        <div class="bg-white rounded-2xl p-5 shadow-sm card-hover border-t-4 border-azul"><p class="text-xs text-gray-500 font-semibold uppercase">Estudiantes</p><p class="text-3xl font-extrabold text-azul mt-1">32</p><p class="text-xs text-green-600 mt-1">Activos</p></div>
+        <div class="bg-white rounded-2xl p-5 shadow-sm card-hover border-t-4 border-turquesa"><p class="text-xs text-gray-500 font-semibold uppercase">Asistencia</p><p class="text-3xl font-extrabold text-turquesa mt-1">89%</p><p class="text-xs text-gray-400 mt-1">Promedio</p></div>
+        <div class="bg-white rounded-2xl p-5 shadow-sm card-hover border-t-4 border-green-500"><p class="text-xs text-gray-500 font-semibold uppercase">Ganancia</p><p class="text-3xl font-extrabold text-green-600 mt-1">+1.4</p><p class="text-xs text-gray-400 mt-1">Pre → Post</p></div>
+        <div class="bg-white rounded-2xl p-5 shadow-sm card-hover border-t-4 border-coral"><p class="text-xs text-gray-500 font-semibold uppercase">Riesgo Alto</p><p class="text-3xl font-extrabold text-coral mt-1">9</p><p class="text-xs text-gray-400 mt-1">Atención prioritaria</p></div>
+        <div class="bg-white rounded-2xl p-5 shadow-sm card-hover border-t-4 border-arena"><p class="text-xs text-gray-500 font-semibold uppercase">Sesiones</p><p class="text-3xl font-extrabold text-azul mt-1">11/12</p><p class="text-xs text-gray-400 mt-1">Cumplidas</p></div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        <!-- BARRAS CSS -->
+        <div class="lg:col-span-2 bg-white rounded-2xl p-6 shadow-sm">
+          <h3 class="font-bold text-azul mb-6">Pretest vs Postest por Área</h3>
+          <div class="flex justify-around items-end bar-group">
+            <div class="text-center"><div class="flex items-end gap-1 justify-center" style="height:220px">
+              <div class="bar bg-arena" style="height:52.5%" title="Pre 2.1"></div><div class="bar bg-turquesa" style="height:87.5%" title="Post 3.5"></div></div>
+              <p class="text-xs font-semibold text-gray-600 mt-2">Matemáticas</p></div>
+            <div class="text-center"><div class="flex items-end gap-1 justify-center" style="height:220px">
+              <div class="bar bg-arena" style="height:60%" title="Pre 2.4"></div><div class="bar bg-turquesa" style="height:90%" title="Post 3.6"></div></div>
+              <p class="text-xs font-semibold text-gray-600 mt-2">Estadística</p></div>
+            <div class="text-center"><div class="flex items-end gap-1 justify-center" style="height:220px">
+              <div class="bar bg-arena" style="height:65%" title="Pre 2.6"></div><div class="bar bg-turquesa" style="height:97.5%" title="Post 3.9"></div></div>
+              <p class="text-xs font-semibold text-gray-600 mt-2">Geometría</p></div>
+            <div class="text-center"><div class="flex items-end gap-1 justify-center" style="height:220px">
+              <div class="bar bg-arena" style="height:70%" title="Pre 2.8"></div><div class="bar bg-turquesa" style="height:100%" title="Post 4.0"></div></div>
+              <p class="text-xs font-semibold text-gray-600 mt-2">Informática</p></div>
+          </div>
+          <div class="flex gap-6 justify-center mt-4 text-xs">
+            <span class="flex items-center gap-2"><span class="w-3 h-3 rounded bg-arena inline-block"></span> Pretest</span>
+            <span class="flex items-center gap-2"><span class="w-3 h-3 rounded bg-turquesa inline-block"></span> Postest</span>
+          </div>
+        </div>
+        <!-- DONA CSS -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm">
+          <h3 class="font-bold text-azul mb-6 text-center">Distribución de Riesgo</h3>
+          <div class="donut"><div class="donut-hole"><p class="text-2xl font-extrabold text-azul">32</p><p class="text-[10px] text-gray-400">estudiantes</p></div></div>
+          <div class="mt-5 space-y-2 text-xs">
+            <p class="flex justify-between"><span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full inline-block" style="background:#2A9D8F"></span>Verde · Fortalecimiento</span><b>12</b></p>
+            <p class="flex justify-between"><span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full inline-block" style="background:#F4A261"></span>Amarillo · Acompañamiento</span><b>11</b></p>
+            <p class="flex justify-between"><span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full inline-block" style="background:#E76F51"></span>Rojo · Intervención</span><b>9</b></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- RADAR GRUPO (SVG) -->
+      <div class="bg-white rounded-2xl p-6 shadow-sm">
+        <h3 class="font-bold text-azul mb-2">Perfil Cognitivo Promedio del Grupo</h3>
+        <div id="radarGrupo" class="max-w-md mx-auto"></div>
+      </div>
+    </section>
+
+    <!-- ===== ESTUDIANTES ===== -->
+    <section id="view-estudiantes" class="view">
+      <div class="flex justify-between items-center mb-6">
+        <div><h2 class="text-3xl font-extrabold text-azul">Estudiantes</h2><p class="text-gray-500 text-sm mt-1">32 inscritos · Programa Segunda Oportunidad</p></div>
+        <div class="flex gap-2">
+          <select class="bg-white border border-gray-200 rounded-xl px-4 py-2 text-sm"><option>Todos los grados</option><option>7°</option><option>8°</option><option>9°</option><option>10°</option><option>11°</option></select>
+          <select class="bg-white border border-gray-200 rounded-xl px-4 py-2 text-sm"><option>Todos los riesgos</option><option>🔴 Alto</option><option>🟡 Medio</option><option>🟢 Bajo</option></select>
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+        <table class="w-full">
+          <thead class="bg-azul text-white"><tr>
+            <th class="text-left px-6 py-4 text-xs font-semibold uppercase">Estudiante</th><th class="text-left px-6 py-4 text-xs font-semibold uppercase">Grado</th>
+            <th class="text-left px-6 py-4 text-xs font-semibold uppercase">Riesgo</th><th class="text-left px-6 py-4 text-xs font-semibold uppercase">Pretest</th>
+            <th class="text-left px-6 py-4 text-xs font-semibold uppercase">Perfil Dominante</th><th class="text-left px-6 py-4 text-xs font-semibold uppercase">Avance</th><th class="text-left px-6 py-4 text-xs font-semibold uppercase">Acción</th>
+          </tr></thead>
+          <tbody id="tablaEstudiantes" class="divide-y divide-gray-100"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ===== FICHA 360 ===== -->
+    <section id="view-ficha360" class="view">
+      <div class="mb-6"><h2 class="text-3xl font-extrabold text-azul">Estudiante 360°</h2><p class="text-gray-500 text-sm mt-1">Perfil cognitivo · Caracterización · Plan de entrenamiento</p></div>
+      <div class="bg-azul rounded-2xl p-6 text-white mb-6 relative overflow-hidden">
+        <div class="kanas-strip absolute top-0 left-0 right-0"></div>
+        <div class="flex items-center gap-5 mt-3">
+          <div class="w-20 h-20 bg-coral rounded-2xl flex items-center justify-center text-3xl font-extrabold">JE</div>
+          <div class="flex-1"><h3 class="text-2xl font-extrabold">J. Epieyú</h3><p class="text-arena text-sm">EST-012 · 9° · I.E. Rural Riohacha</p>
+            <div class="flex gap-2 mt-2"><span class="badge-alto text-xs px-3 py-1 rounded-full font-semibold">🔴 Riesgo Alto</span><span class="bg-white/10 text-xs px-3 py-1 rounded-full">Perfil: Visoespacial</span></div></div>
+          <div class="text-right"><p class="text-xs text-arena uppercase">Pretest</p><p class="text-4xl font-extrabold text-coral">2.1</p><p class="text-xs text-arena">/ 4.0</p></div>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="bg-white rounded-2xl p-6 shadow-sm">
+          <h3 class="font-bold text-azul mb-1">Perfil Cognitivo — 6 Variables</h3>
+          <p class="text-xs text-gray-400 mb-3">Escala 1–4 · Evaluación observacional pedagógica</p>
+          <div id="radarEstudiante"></div>
+        </div>
+        <div class="space-y-6">
+          <div class="bg-white rounded-2xl p-6 shadow-sm border-l-4 border-turquesa">
+            <h3 class="font-bold text-azul mb-3">◈ Caracterización</h3>
+            <p class="text-sm text-gray-600 leading-relaxed">Estudiante con <strong>fortaleza visoespacial marcada (3.4/4)</strong> y <strong>memoria de trabajo descendida (1.8/4)</strong>. Aprende mejor con material manipulativo y representación física antes que simbólica. Se bloquea ante errores en público (tolerancia a la frustración 2.0).</p>
+          </div>
+          <div class="bg-coral/10 border border-coral/30 rounded-2xl p-5">
+            <h3 class="font-bold text-coral mb-2 text-sm">⚠️ Alerta socioemocional activa</h3>
+            <p class="text-xs text-gray-600">Ansiedad matemática elevada detectada en pretest. Se aplica protocolo de exposición gradual y refuerzo positivo privado.</p>
+          </div>
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl p-6 shadow-sm mt-6">
+        <h3 class="font-bold text-azul mb-4">◈ Plan de Entrenamiento — 4 Semanas</h3>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div class="bg-crema rounded-xl p-4 border-t-4 border-turquesa"><p class="text-xs font-bold text-turquesa uppercase">Semana 1</p><p class="text-sm font-semibold mt-1 text-azul">Fundamentos + Roles</p><p class="text-xs text-gray-500 mt-2">Taller 1 y 3 como "Diseñador / Tejedor". Carga simbólica mínima.</p></div>
+          <div class="bg-crema rounded-xl p-4 border-t-4 border-turquesa"><p class="text-xs font-bold text-turquesa uppercase">Semana 2</p><p class="text-sm font-semibold mt-1 text-azul">Manipulación física</p><p class="text-xs text-gray-500 mt-2">Material concreto antes que símbolos. Pausas activas cada 25 min.</p></div>
+          <div class="bg-crema rounded-xl p-4 border-t-4 border-coral"><p class="text-xs font-bold text-coral uppercase">Semana 3</p><p class="text-sm font-semibold mt-1 text-azul">Carga simbólica progresiva</p><p class="text-xs text-gray-500 mt-2">Transición gradual a abstracción. Refuerzo positivo privado.</p></div>
+          <div class="bg-crema rounded-xl p-4 border-t-4 border-green-500"><p class="text-xs font-bold text-green-600 uppercase">Semana 4</p><p class="text-sm font-semibold mt-1 text-azul">Integración + Proyección</p><p class="text-xs text-gray-500 mt-2">Candidato ideal para módulo RV de manipulación 3D (Fase 3).</p></div>
+        </div>
+        <div class="mt-6"><p class="text-xs font-bold text-gray-400 uppercase mb-3">Progreso de sesiones</p>
+          <div class="flex gap-1">
+            <span class="flex-1 h-3 bg-green-500 rounded-full"></span><span class="flex-1 h-3 bg-green-500 rounded-full"></span><span class="flex-1 h-3 bg-green-500 rounded-full"></span><span class="flex-1 h-3 bg-green-500 rounded-full"></span><span class="flex-1 h-3 bg-green-500 rounded-full"></span><span class="flex-1 h-3 bg-green-500 rounded-full"></span><span class="flex-1 h-3 bg-green-500 rounded-full"></span><span class="flex-1 h-3 bg-green-500 rounded-full"></span><span class="flex-1 h-3 bg-green-500 rounded-full"></span><span class="flex-1 h-3 bg-green-500 rounded-full"></span><span class="flex-1 h-3 bg-green-500 rounded-full"></span><span class="flex-1 h-3 bg-gray-200 rounded-full"></span>
+          </div>
+          <p class="text-xs text-gray-400 mt-2">11 de 12 sesiones completadas · Asistencia 92%</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== BITÁCORA ===== -->
+    <section id="view-bitacora" class="view">
+      <div class="mb-6"><h2 class="text-3xl font-extrabold text-azul">Bitácora de Sesión</h2><p class="text-gray-500 text-sm mt-1">Registro diario del facilitador · Trazabilidad por estudiante</p></div>
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2 bg-white rounded-2xl p-6 shadow-sm">
+          <div class="grid grid-cols-2 gap-4 mb-4">
+            <div><label class="text-xs font-semibold text-gray-500 uppercase">Fecha</label><input type="date" value="2026-12-18" class="w-full border border-gray-200 rounded-xl px-4 py-2 mt-1 text-sm"></div>
+            <div><label class="text-xs font-semibold text-gray-500 uppercase">Sesión</label><select class="w-full border border-gray-200 rounded-xl px-4 py-2 mt-1 text-sm"><option>Sesión 4 — Tejiendo la Kana (Álgebra)</option></select></div>
+          </div>
+          <div class="mb-4"><label class="text-xs font-semibold text-gray-500 uppercase">Tema matemático</label><input type="text" value="Expresiones algebraicas y patrones" class="w-full border border-gray-200 rounded-xl px-4 py-2 mt-1 text-sm"></div>
+          <div class="mb-4"><label class="text-xs font-semibold text-gray-500 uppercase">Roles / Actores asignados</label>
+            <div class="flex flex-wrap gap-2 mt-2"><span class="bg-turquesa/10 text-turquesa px-3 py-1 rounded-full text-xs font-semibold">🎨 Diseñador</span><span class="bg-turquesa/10 text-turquesa px-3 py-1 rounded-full text-xs font-semibold">🧶 Tejedor</span><span class="bg-turquesa/10 text-turquesa px-3 py-1 rounded-full text-xs font-semibold">🔤 Traductor</span><span class="bg-turquesa/10 text-turquesa px-3 py-1 rounded-full text-xs font-semibold">✓ Verificador</span></div></div>
+          <div class="mb-4"><label class="text-xs font-semibold text-gray-500 uppercase mb-2 block">Rúbrica cognitiva grupal (1–4)</label>
+            <div class="space-y-2">
+              <div class="flex items-center justify-between bg-crema rounded-lg px-4 py-2"><span class="text-sm">Atención sostenida</span><div class="flex gap-1"><span class="w-7 h-7 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center text-xs">1</span><span class="w-7 h-7 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center text-xs">2</span><span class="w-7 h-7 rounded-full bg-turquesa text-white flex items-center justify-center text-xs">3</span><span class="w-7 h-7 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center text-xs">4</span></div></div>
+              <div class="flex items-center justify-between bg-crema rounded-lg px-4 py-2"><span class="text-sm">Memoria de trabajo</span><div class="flex gap-1"><span class="w-7 h-7 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center text-xs">1</span><span class="w-7 h-7 rounded-full bg-turquesa text-white flex items-center justify-center text-xs">2</span><span class="w-7 h-7 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center text-xs">3</span><span class="w-7 h-7 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center text-xs">4</span></div></div>
+              <div class="flex items-center justify-between bg-crema rounded-lg px-4 py-2"><span class="text-sm">Participación</span><div class="flex gap-1"><span class="w-7 h-7 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center text-xs">1</span><span class="w-7 h-7 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center text-xs">2</span><span class="w-7 h-7 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center text-xs">3</span><span class="w-7 h-7 rounded-full bg-turquesa text-white flex items-center justify-center text-xs">4</span></div></div>
+            </div></div>
+          <div class="mb-4"><label class="text-xs font-semibold text-gray-500 uppercase">Observación cualitativa</label><textarea rows="3" class="w-full border border-gray-200 rounded-xl px-4 py-2 mt-1 text-sm">J. Epieyú mostró mayor seguridad al trabajar con material manipulativo (cuentas). Se le asignó rol de Tejedor y respondió positivamente. Aún requiere refuerzo privado al equivocarse.</textarea></div>
+          <div class="mb-4"><label class="text-xs font-semibold text-gray-500 uppercase">Ajuste curricular aplicado</label><select class="w-full border border-gray-200 rounded-xl px-4 py-2 mt-1 text-sm"><option>Carga simbólica reducida + material concreto</option></select></div>
+          <button class="w-full bg-azul hover:bg-azul2 text-white font-bold py-3 rounded-xl">Guardar Bitácora</button>
+        </div>
+        <div class="bg-white rounded-2xl p-6 shadow-sm h-fit">
+          <h3 class="font-bold text-azul mb-4">Asistencia — Sesión 4</h3>
+          <div class="space-y-3" id="listaAsistencia"></div>
+          <div class="mt-4 pt-4 border-t border-gray-100 flex justify-between text-sm"><span class="text-gray-500">Presentes</span><span class="font-bold text-green-600">23 / 25</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== MÓVIL ESTUDIANTE ===== -->
+    <section id="view-movilEstudiante" class="view">
+      <div class="mb-6"><h2 class="text-3xl font-extrabold text-azul">Vista Estudiante</h2><p class="text-gray-500 text-sm mt-1">App móvil — experiencia del estudiante</p></div>
+      <div class="flex justify-center"><div class="phone-frame"><div class="phone-notch"></div>
+        <div class="h-full bg-crema flex flex-col pt-10">
+          <div class="bg-azul text-white px-5 py-4 rounded-b-3xl"><p class="text-arena text-xs">Hola de nuevo 👋</p><p class="font-extrabold text-lg">J. Epieyú</p>
+            <div class="flex items-center justify-between mt-3"><div><p class="text-[10px] text-arena uppercase">Tu avance</p><p class="text-2xl font-extrabold text-turquesa">61%</p></div><div class="w-14 h-14 rounded-full border-4 border-turquesa flex items-center justify-center text-xs font-bold">🔥 5</div></div></div>
+          <div class="px-5 mt-4"><p class="text-xs font-bold text-gray-400 uppercase mb-2">Reto de hoy</p>
+            <div class="bg-white rounded-2xl p-4 shadow-sm border-l-4 border-turquesa"><p class="font-bold text-azul text-sm">🧶 Tejiendo la Kana</p><p class="text-xs text-gray-500 mt-1">Traduce el patrón de la mochila a una expresión algebraica</p><button class="mt-3 w-full bg-turquesa text-white text-xs font-bold py-2 rounded-xl">Comenzar reto</button></div></div>
+          <div class="px-5 mt-3"><p class="text-xs font-bold text-gray-400 uppercase mb-2">Próxima sesión</p>
+            <div class="bg-white rounded-2xl p-3 shadow-sm flex items-center gap-3"><div class="w-10 h-10 bg-arena rounded-xl flex items-center justify-center">📅</div><div><p class="text-xs font-bold text-azul">El Palabrero y el Equilibrio</p><p class="text-[10px] text-gray-400">Mañana · 2:00 PM</p></div></div></div>
+          <div class="px-5 mt-3"><div class="bg-turquesa/10 rounded-2xl p-3"><p class="text-[10px] font-bold text-turquesa uppercase">💬 Mensaje del facilitador</p><p class="text-xs text-gray-600 mt-1">"¡Excelente trabajo hoy con las cuentas! Mañana seguimos construyendo."</p></div></div>
+          <div class="mt-auto bg-white border-t border-gray-100 flex justify-around py-3"><span class="text-turquesa text-lg">🏠</span><span class="text-gray-300 text-lg">📚</span><span class="text-gray-300 text-lg">🏆</span><span class="text-gray-300 text-lg">👤</span></div>
+        </div></div></div>
+    </section>
+
+    <!-- ===== MÓVIL PADRE ===== -->
+    <section id="view-movilPadre" class="view">
+      <div class="mb-6"><h2 class="text-3xl font-extrabold text-azul">Vista Padre / Acudiente</h2><p class="text-gray-500 text-sm mt-1">App móvil — acompañamiento familiar</p></div>
+      <div class="flex justify-center"><div class="phone-frame"><div class="phone-notch"></div>
+        <div class="h-full bg-crema flex flex-col pt-10">
+          <div class="bg-azul text-white px-5 py-4 rounded-b-3xl"><p class="text-arena text-xs">Acudiente de</p><p class="font-extrabold text-lg">J. Epieyú · 9°</p><span class="badge-alto text-[10px] px-3 py-1 rounded-full font-semibold inline-block mt-2">🔴 En intervención</span></div>
+          <div class="px-5 mt-4 space-y-3">
+            <div class="bg-white rounded-2xl p-4 shadow-sm"><div class="flex justify-between items-center"><span class="text-xs font-bold text-gray-400 uppercase">Asistencia</span><span class="text-lg font-extrabold text-green-600">92%</span></div><div class="w-full bg-gray-100 rounded-full h-2 mt-2"><div class="bg-green-500 h-2 rounded-full" style="width:92%"></div></div></div>
+            <div class="bg-white rounded-2xl p-4 shadow-sm"><div class="flex justify-between items-center"><span class="text-xs font-bold text-gray-400 uppercase">Avance del plan</span><span class="text-lg font-extrabold text-turquesa">61%</span></div><div class="w-full bg-gray-100 rounded-full h-2 mt-2"><div class="bg-turquesa h-2 rounded-full" style="width:61%"></div></div></div>
+            <div class="grid grid-cols-2 gap-3">
+              <div class="bg-white rounded-2xl p-3 shadow-sm"><p class="text-[10px] font-bold text-green-600 uppercase">💪 Fortaleza</p><p class="text-xs text-azul font-semibold mt-1">Percepción visoespacial</p></div>
+              <div class="bg-white rounded-2xl p-3 shadow-sm"><p class="text-[10px] font-bold text-coral uppercase">🎯 Por mejorar</p><p class="text-xs text-azul font-semibold mt-1">Memoria de trabajo</p></div></div>
+            <div class="bg-arena rounded-2xl p-4"><p class="text-[10px] font-bold text-azul uppercase">📌 Recomendación</p><p class="text-xs text-gray-600 mt-1">Acompañe 15 minutos diarios sin presionar. Celebre el esfuerzo, no solo el resultado.</p></div>
+          </div>
+          <div class="mt-auto bg-white border-t border-gray-100 flex justify-around py-3"><span class="text-turquesa text-lg">🏠</span><span class="text-gray-300 text-lg">📊</span><span class="text-gray-300 text-lg">💬</span><span class="text-gray-300 text-lg">⚙️</span></div>
+        </div></div></div>
+    </section>
+
+    <!-- ===== RUTA ===== -->
+    <section id="view-ruta" class="view">
+      <div class="mb-8"><h2 class="text-3xl font-extrabold text-azul">Ruta del Proyecto</h2><p class="text-gray-500 text-sm mt-1">Del refuerzo intensivo a la Realidad Virtual</p></div>
+      <div class="relative max-w-4xl mx-auto mt-12">
+        <div class="timeline-line"></div>
+        <div class="flex justify-between relative">
+          <div class="flex flex-col items-center w-1/3 px-4"><div class="timeline-dot" style="background:linear-gradient(135deg,#17A2B8,#13315C)">🎯</div>
+            <div class="bg-white rounded-2xl p-5 shadow-md mt-6 text-center card-hover w-full"><p class="text-xs font-bold text-turquesa uppercase">2026–2027 · Fase 1</p><h3 class="font-extrabold text-azul mt-1">Refuerzo Intensivo</h3><p class="text-xs text-gray-500 mt-2">Pretest → Perfil → Entrenamiento vivencial → Postest y trazabilidad</p><span class="inline-block mt-3 bg-green-100 text-green-700 text-xs font-bold px-3 py-1 rounded-full">● En ejecución</span></div></div>
+          <div class="flex flex-col items-center w-1/3 px-4"><div class="timeline-dot" style="background:linear-gradient(135deg,#F4A261,#E76F51)">🧠</div>
+            <div class="bg-white rounded-2xl p-5 shadow-md mt-6 text-center card-hover w-full"><p class="text-xs font-bold text-coral uppercase">2027 · Fase 2</p><h3 class="font-extrabold text-azul mt-1">Software de Perfil Cognitivo</h3><p class="text-xs text-gray-500 mt-2">Test cognitivo digital que identifica el perfil y potencial de cada estudiante</p><span class="inline-block mt-3 bg-gray-100 text-gray-500 text-xs font-bold px-3 py-1 rounded-full">○ Planificado</span></div></div>
+          <div class="flex flex-col items-center w-1/3 px-4"><div class="timeline-dot" style="background:linear-gradient(135deg,#0B2545,#17A2B8)">🥽</div>
+            <div class="bg-white rounded-2xl p-5 shadow-md mt-6 text-center card-hover w-full"><p class="text-xs font-bold text-azul uppercase">2028 · Fase 3</p><h3 class="font-extrabold text-azul mt-1">Realidad Virtual + Sensorial</h3><p class="text-xs text-gray-500 mt-2">Entrenamiento inmersivo del potencial identificado con gafas RV y estimuladores</p><span class="inline-block mt-3 bg-gray-100 text-gray-500 text-xs font-bold px-3 py-1 rounded-full">○ Visión</span></div></div>
+        </div>
+      </div>
+      <div class="max-w-2xl mx-auto mt-12 bg-azul rounded-2xl p-8 text-center text-white relative overflow-hidden">
+        <div class="kanas-strip absolute top-0 left-0 right-0"></div>
+        <p class="text-xl font-extrabold mt-2">El piloto de vacaciones es la entrada.</p><p class="text-arena mt-1">El contrato anual de entrenamiento cognitivo es la relación.</p>
+      </div>
+    </section>
+
+    <div class="mt-12 pt-6 border-t border-gray-200 text-center"><p class="text-[10px] text-gray-400">Demo institucional con datos simulados · Perfil cognitivo observacional pedagógico, no constituye diagnóstico clínico<br>COGNIA © 2026 · Centro de Desarrollo Cognitivo · Riohacha, La Guajira</p></div>
+  </main>
+</div>
+
+<script>
+// ================= DATOS =================
+const estudiantes = [
+  { id:"EST-012", nombre:"J. Epieyú",  grado:"9°",  riesgo:"alto",  pretest:2.1, perfil:"Visoespacial",      avance:61 },
+  { id:"EST-024", nombre:"M. Ipuana",  grado:"8°",  riesgo:"medio", pretest:2.8, perfil:"Verbal-secuencial", avance:72 },
+  { id:"EST-031", nombre:"K. Gouriyú", grado:"10°", riesgo:"alto",  pretest:1.9, perfil:"Lógico-patrón",     avance:48 },
+  { id:"EST-045", nombre:"L. Pushaina",grado:"7°",  riesgo:"bajo",  pretest:3.4, perfil:"Kinestésico",       avance:90 },
+  { id:"EST-052", nombre:"A. Vanegas", grado:"11°", riesgo:"medio", pretest:2.6, perfil:"Mixto",             avance:70 }
+];
+
+// ================= NAVEGACIÓN =================
+function enterApp(){ document.getElementById('loginScreen').classList.add('hidden'); document.getElementById('mainApp').classList.remove('hidden'); showView('dashboard', document.querySelector('.nav-item')); }
+function logout(){ document.getElementById('mainApp').classList.add('hidden'); document.getElementById('loginScreen').classList.remove('hidden'); }
+function showView(id, btn){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('view-'+id).classList.add('active');
+  if(btn) btn.classList.add('active');
+  if(id==='estudiantes') renderTabla();
+  if(id==='bitacora') renderAsistencia();
+}
+
+// ================= RADAR SVG (sin Chart.js, vectorial y nítido) =================
+function drawRadar(containerId, labels, datasets){
+  const n = labels.length, cx=170, cy=150, R=105;
+  const pt = (val,i)=>{ const a=(Math.PI*2*i/n)-Math.PI/2; const r=R*val/4; return [cx+r*Math.cos(a), cy+r*Math.sin(a)]; };
+  let svg = `<svg viewBox="0 0 340 300" width="100%" xmlns="http://www.w3.org/2000/svg">`;
+  // anillos
+  for(let lvl=1; lvl<=4; lvl++){
+    const pts = labels.map((_,i)=>pt(lvl,i).join(',')).join(' ');
+    svg += `<polygon points="${pts}" fill="none" stroke="#E5E7EB" stroke-width="1"/>`;
+  }
+  // ejes + etiquetas
+  labels.forEach((lb,i)=>{
+    const [x,y]=pt(4,i);
+    svg += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#E5E7EB" stroke-width="1"/>`;
+    const [lx,ly]=pt(4.75,i);
+    svg += `<text x="${lx}" y="${ly}" font-size="9" fill="#6B7280" text-anchor="middle" dominant-baseline="middle">${lb}</text>`;
+  });
+  // series
+  datasets.forEach(ds=>{
+    const pts = ds.data.map((v,i)=>pt(v,i).join(',')).join(' ');
+    svg += `<polygon points="${pts}" fill="${ds.fill}" stroke="${ds.stroke}" stroke-width="2" ${ds.dash?`stroke-dasharray="5,4"`:''}/>`;
+    ds.data.forEach((v,i)=>{ const [x,y]=pt(v,i); svg += `<circle cx="${x}" cy="${y}" r="3" fill="${ds.stroke}"/>`; });
+  });
+  svg += `</svg>`;
+  // leyenda
+  let leg = `<div class="flex gap-4 justify-center mt-2 text-[11px]">` + datasets.map(ds=>`<span class="flex items-center gap-1"><span class="w-3 h-3 rounded-sm inline-block" style="background:${ds.stroke}"></span>${ds.label}</span>`).join('') + `</div>`;
+  document.getElementById(containerId).innerHTML = svg + leg;
+}
+
+// ================= TABLA / ASISTENCIA =================
+function renderTabla(){
+  const badges={alto:['badge-alto','🔴 Alto'],medio:['badge-medio','🟡 Medio'],bajo:['badge-bajo','🟢 Bajo']};
+  document.getElementById('tablaEstudiantes').innerHTML = estudiantes.map(e=>`
+    <tr class="hover:bg-crema">
+      <td class="px-6 py-4"><div class="flex items-center gap-3"><div class="w-9 h-9 bg-azul text-white rounded-full flex items-center justify-center text-xs font-bold">${e.nombre[0]}${e.nombre.split(' ')[1][0]}</div><div><p class="font-semibold text-azul text-sm">${e.nombre}</p><p class="text-xs text-gray-400">${e.id}</p></div></div></td>
+      <td class="px-6 py-4 text-sm">${e.grado}</td>
+      <td class="px-6 py-4"><span class="${badges[e.riesgo][0]} text-xs px-3 py-1 rounded-full font-semibold">${badges[e.riesgo][1]}</span></td>
+      <td class="px-6 py-4 font-bold text-azul">${e.pretest}</td>
+      <td class="px-6 py-4 text-sm">${e.perfil}</td>
+      <td class="px-6 py-4"><div class="flex items-center gap-2"><div class="w-24 bg-gray-100 rounded-full h-2"><div class="bg-turquesa h-2 rounded-full" style="width:${e.avance}%"></div></div><span class="text-xs text-gray-500">${e.avance}%</span></div></td>
+      <td class="px-6 py-4"><button onclick="showView('ficha360')" class="text-turquesa hover:text-azul text-xs font-bold">Ver 360° →</button></td>
+    </tr>`).join('');
+}
+function renderAsistencia(){
+  document.getElementById('listaAsistencia').innerHTML = estudiantes.map((e,i)=>`
+    <label class="flex items-center gap-3 bg-crema rounded-xl px-3 py-2 cursor-pointer hover:bg-arena">
+      <input type="checkbox" ${i<4?'checked':''} class="w-4 h-4 accent-[#17A2B8]">
+      <span class="text-sm text-azul flex-1">${e.nombre}</span><span class="text-xs text-gray-400">${e.grado}</span>
+    </label>`).join('');
+}
+
+// ================= INICIALIZACIÓN =================
+window.addEventListener('load', ()=>{
+  const L = ['Atención','Memoria','Flexibilidad','Razonamiento','Velocidad','Tolerancia'];
+  drawRadar('radarGrupo', L, [{label:'Promedio grupal', data:[2.6,2.4,2.8,3.0,2.5,2.7], fill:'rgba(23,162,184,.2)', stroke:'#17A2B8'}]);
+  drawRadar('radarEstudiante', ['Atención sostenida','Memoria de trabajo','Flexibilidad cognitiva','Razonamiento lógico','Velocidad de procesamiento','Tolerancia frustración'],
+    [{label:'J. Epieyú', data:[2.0,1.8,2.4,2.8,2.2,2.0], fill:'rgba(231,111,81,.2)', stroke:'#E76F51'},
+     {label:'Promedio esperado', data:[3.2,3.2,3.2,3.2,3.2,3.2], fill:'rgba(23,162,184,.05)', stroke:'#17A2B8', dash:true}]);
+  renderTabla(); renderAsistencia();
+});
+</script>
+</body>
+</html>
